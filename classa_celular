@@ -1,0 +1,138 @@
+#prova realizada em dupla Miguel e Gildeir
+from random import *
+class Celular:
+    def __init__(self, numero, creditos, bateria = (randint(0,101)), aparelho_conectado=None, caixa_sms=0, estado = None ,sinal=True, ligado = False):
+        self.__numero = numero
+        self.__bateria = bateria
+        self.__sinal = sinal
+        self.__ligado = ligado
+        self.__estado = estado
+        self.__creditos = creditos
+        self.__aparelho_conectado = aparelho_conectado
+        self.__caixa_sms = caixa_sms
+        self.sms=[]
+
+    @property
+    def bateria(self):
+        return self.__bateria
+    @property
+    def creditos(self):
+        return self.__creditos
+    @property
+    def numero(self):
+        return self.__numero
+    @property
+    def estado(self):
+        return self.__estado
+    @property
+    def sinal(self):
+        return self.__sinal
+
+    def ligar(self):
+        if self.__bateria >=0:
+            if self.__ligado == False:
+                self.__ligado = True
+                self.__estado = 0
+            else:
+                print('Celuilar ja esta ligado')
+        else:
+            print('Bateria descarregada')
+
+    def desligar(self):
+        if self.__ligado==True:
+            self.__ligado=False
+            self.__estado=None
+            self.__sinal=False
+            print('Pronto celular desligado')
+        else:
+            print('Celular já esta desligado')
+
+    def colocar_creditos(self, valor):
+        self.__creditos += valor
+        print(f'seu saldo atual e {self.__creditos}')
+
+    def carregar_bateria(self):
+        if self.__bateria < 100:
+            self.__bateria == 100
+            print('Bateria carregada 100%')
+        else:
+            print('Bateria ja esta carregada ')
+
+
+    def fazer_ligacao(self,aparelho):
+        if type(aparelho) == Celular:
+            if self.__ligado == True:
+                if self.__creditos > 1:
+                    if self.__estado == 0 and aparelho.estado==0:
+                        if self.__sinal==True and aparelho.sinal == True:
+                            self.__estado=1
+                            self.__creditos-=1
+                            print(f'celular esta em chamada com {aparelho.numero}')
+                    else:
+                        print('Celular ja esta em ligacão')
+                else:
+                    print('celular sem credito')
+            else:
+                print('nao foi possivel realizar a ligação celular já esta em ligação')
+        else:
+            print('obj nao e um lanterninha')
+    def encerrar_ligacao(self,tempo):
+        if self.__ligado == True:
+            if tempo < self.__bateria:
+                if self.__estado==1:
+                    self.__estado=0
+                    self.__bateria-=tempo
+                    print('ligacao encerrada')
+                else:
+                    print('o celular nao esta em ligacao')
+            else:
+                print('celular com pouca bateria encerrou a ligacao e desligou')
+                self.__ligado=False
+                self.__estado=None
+        else:
+            print('celular esta desligado')
+
+    def enviar_sms(self,sms,aparelho):
+
+        if self.__ligado==True:
+            if self.__sinal==True and aparelho.sinal==True:
+                if self.__creditos>0.5 :
+                    self.__creditos-=0.5
+                    aparelho.sms.append(sms)
+                    print('mensagem enviada')
+                else:
+                    print('sem credito')
+            else:
+                print('celular sem sinal')
+        else:
+            print('desligado')
+
+
+    def ver_sms(self):
+        if self.sms == []:
+            print('A caixa de mensagem esta vazia')
+        else:
+            print(self.sms)
+
+    def esvaziar_caixa(self):
+        self.sms.clear()
+        print(self.sms)
+
+
+
+c1=Celular('123',10)
+lanterninha = Celular('213', 1)
+c2=Celular('222',60)
+lanterninha.ligar()
+c1.ligar()
+c2.ligar()
+c2.desligar()
+lanterninha.colocar_creditos(50)
+c1.colocar_creditos(10)
+c1.ligar()
+c1.fazer_ligacao(lanterninha)
+c2.fazer_ligacao(c1)
+c1.encerrar_ligacao(10)
+c1.enviar_sms('deu certo',lanterninha)
+lanterninha.ver_sms()
+lanterninha.esvaziar_caixa()
